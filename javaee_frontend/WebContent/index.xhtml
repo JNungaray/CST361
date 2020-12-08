@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:c="http://java.sun.com/jstl/core"
+	  xmlns:f = "http://java.sun.com/jsf/core">
+	<h:head>
+		<title>Welcome</title>
+		<style>
+			.btn {
+				margin: 0 5px;
+				text-decoration: none;
+				border-style: outset;
+				background-color:white;
+				color: black;
+				padding: 3px 3px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+		</style>
+	</h:head>
+	<h:body>
+		<div style="width:100%; background-color:black; color:white; min-height:2.7em; position:relative;">
+			<div style="float:right;position:absolute;right:5px;top:50%;transform:translateY(-50%);" >
+				<c:if test="#{sessionScope['user_id'] == null || sessionScope['user_id'] == 0}">
+					<a href="Login.xhtml" class="btn">Login</a>
+					<a href="Register.xhtml" class="btn">Register</a>
+				</c:if>
+				<c:if test="#{sessionScope['user_id'] != null &amp;&amp; sessionScope['user_id'] != 0}">
+					<h:form><h:commandLink value="Logout" action="#{userController.logout()}" class="btn" /></h:form>
+				</c:if>
+			</div>
+			<c:if test="#{sessionScope['user_id'] != null &amp;&amp; sessionScope['user_id'] != 0}">
+				<div style="float:left;position:absolute;left:5px;top:50%;transform:translateY(-50%);" >
+					<h:form>
+						<h:selectOneMenu value="#{chartData.type}" style="float:left;">
+							<f:selectItem itemValue="0" itemLabel="Today" />
+							<f:selectItem itemValue="1" itemLabel="This Week" />
+							<f:selectItem itemValue="2" itemLabel="This Month" />
+						</h:selectOneMenu>
+						<h:commandButton value="Set" action="#{weatherController.getData(chartData.type)}" />
+					</h:form>
+				</div>
+			</c:if>
+		</div>
+		<c:if test="#{sessionScope['user_id'] == null || sessionScope['user_id'] == 0}">
+			<div style="text-align:center;">
+				<h1>
+					Welcome
+				</h1>
+			</div>
+		</c:if>
+		<c:if test="#{sessionScope['user_id'] != null &amp;&amp; sessionScope['user_id'] != 0}">
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+			<script>
+				function generateGraph(dataString){
+					var data = JSON.parse(dataString);
+					console.log(data);
+					var ctx = document.getElementById('datachart');
+					var myChart = new Chart(ctx, {
+						type: 'bar',
+						data: {
+							labels: data.labels,
+							datasets: [{
+								label: "Temp in F",
+						     	backgroundColor:"#FF0000",
+						        data: data.temps
+						    }]
+						},
+						options: {
+							legend: { display: false },
+							title: {
+								display: true,
+								text: 'Temperature in F'
+							}
+						}
+					});
+				}
+			</script>
+			<c:if test="#{ chartData.id != null }">
+				<div style="text-align:center;">
+					<h1>
+						<c:if test="#{chartData.type == 0 }">Today</c:if>
+						<c:if test="#{chartData.type == 1 }">This Week</c:if>
+						<c:if test="#{chartData.type == 1 }">This Month</c:if>
+					</h1>
+					<button class="btn" onclick="generateGraph('#{chartData.dataString}')">Generate Graph</button>
+				</div>
+				<div style="text-align:center;">
+					<canvas id="datachart" style="width:60%; height:auto; margin:0 auto"></canvas>
+				</div>
+			</c:if>
+		</c:if>
+	</h:body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<h:head>
+		<title>Register</title>
+	</h:head>
+	<h:body>
+		<div style="text-align:center;"><h1>Register</h1></div>
+		<h:form>
+			<table style="margin:0 auto;">
+				<tr>
+					<td>First name:</td>
+					<td><h:inputText value="#{user.firstname}"></h:inputText></td>
+				</tr>
+				<tr>
+					<td>Last name:</td>
+					<td><h:inputText value="#{user.lastname}"></h:inputText></td>
+				</tr>
+				<tr>
+					<td>Email:</td>
+					<td><h:inputText value="#{user.email}"></h:inputText></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><h:inputSecret value="#{user.password}" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align:center;"><h:commandButton value="Submit" action="#{userController.register(user)}" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align:center;"><h:messages style="color:red;"></h:messages></td>
+				</tr>
+			</table>
+		</h:form>
+	</h:body>
+</html>
