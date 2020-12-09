@@ -82,7 +82,7 @@
 					<h1>
 						<c:if test="#{chartData.type == 0 }">Today</c:if>
 						<c:if test="#{chartData.type == 1 }">This Week</c:if>
-						<c:if test="#{chartData.type == 1 }">This Month</c:if>
+						<c:if test="#{chartData.type == 2 }">This Month</c:if>
 					</h1>
 					<button class="btn" onclick="generateGraph('#{chartData.dataString}')">Generate Graph</button>
 				</div>

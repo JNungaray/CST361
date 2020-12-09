@@ -1,15 +1,22 @@
 package controller;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+
+import java.io.Serializable;
+
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
+import javax.interceptor.Interceptors;
 
 import beans.ChartData;
 import business.WeatherBusinessService;
+import util.LoggingInterceptor;
 
-@ManagedBean
+@Named
 @ViewScoped
-public class WeatherController {
+@Interceptors(LoggingInterceptor.class)
+public class WeatherController implements Serializable
+{
 
 	public String getData(int type) {
 		WeatherBusinessService service = new WeatherBusinessService();

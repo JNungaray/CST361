@@ -1,24 +1,34 @@
 package controller;
 
-import java.io.Console;
+import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSession;
 
 import beans.ChartData;
 import beans.Login;
 import beans.User;
-import business.UserBusiness;
+import business.UserBusinessInterface;
 import business.WeatherBusinessService;
+import util.LoggingInterceptor;
 import util.UserNotFoundException;
 import util.UserTakenException;
 
-@ManagedBean
+@Named
 @ViewScoped
-public class UserController 
+@Interceptors(LoggingInterceptor.class)
+public class UserController implements Serializable
 {
+	@EJB
+	UserBusinessInterface userService;
+	
+	@EJB
+	WeatherBusinessService weatherService;
+	
 	public String logout() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		session.invalidate();
@@ -27,11 +37,10 @@ public class UserController
 	
 	public String register(User user)
 	{
-		UserBusiness service = new UserBusiness();
 		FacesContext.getCurrentInstance().getExternalContext()
 			.getRequestMap().put("user", user);
 		try {
-			service.create(user);
+			userService.create(user);
 		} catch (UserTakenException e) {
 			return "Register.xhtml";
 		}
@@ -40,20 +49,18 @@ public class UserController
 	
 	public String login(Login login)
 	{
-		UserBusiness service = new UserBusiness();
 		
 		FacesContext.getCurrentInstance().getExternalContext()
 		.getRequestMap().put("login", login);
 		
 		try {
-			User u = service.login(login.getEmail(), login.getPassword());
+			User u = userService.login(login.getEmail(), login.getPassword());
 			FacesContext.getCurrentInstance().getExternalContext()
 			.getRequestMap().put("user", u);
 			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 			session.setAttribute("user_id", u.getId());
 			
-			WeatherBusinessService w = new WeatherBusinessService();
-			ChartData chartData = w.getDailyWeather();
+			ChartData chartData = weatherService.getDailyWeather();
 			FacesContext.getCurrentInstance().getExternalContext()
 				.getRequestMap().put("chartData", chartData);
 			System.out.println(chartData.getDataString());

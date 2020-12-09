@@ -74,7 +74,7 @@ public class WeatherBusinessService {
 	}
 	
 	public ChartData getWeeklyWeather() {
-ChartData data = new ChartData();
+		ChartData data = new ChartData();
 		
 		try {
 			URL url = new URL("http://localhost:8888/simulated_iot/api/getWeather.php?type=weekly");
@@ -126,7 +126,7 @@ ChartData data = new ChartData();
 	}
 	
 	public ChartData getMonthlyWeather() {
-ChartData data = new ChartData();
+		ChartData data = new ChartData();
 		
 		try {
 			URL url = new URL("http://localhost:8888/simulated_iot/api/getWeather.php?type=monthly");
